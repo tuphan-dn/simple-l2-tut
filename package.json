@@ -16,6 +16,8 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "libp2p": "^2.0.2"
+    "dotenv": "^16.4.5",
+    "libp2p": "^2.0.2",
+    "zod": "^3.23.8"
   }
 }
