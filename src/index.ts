@@ -1,11 +1,11 @@
-import { createLibp2p } from 'libp2p'
-import config from './config'
+import { keys } from '@libp2p/crypto'
 
-export default class Swarm {
-  new = async () => {
-    const behavior = {}
-    const swarm = await createLibp2p(behavior)
-  }
+import { PRIVATE_KEY } from './config'
+import Swarm from './swarm'
+
+async function main() {
+  const privkey = keys.privateKeyFromRaw(Buffer.from(PRIVATE_KEY, 'hex'))
+  const swarm = await Swarm.new(privkey)
+  swarm.swarm.start()
 }
-
-console.log(config.PRIVATE_KEY)
+main()
