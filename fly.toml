@@ -6,7 +6,7 @@
 app = 'simple-l2-tut'
 primary_region = 'sin'
 
-[services]
+[[services]]
 protocol = "tcp"
 internal_port = 8000
 force_https = true
