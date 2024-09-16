@@ -41,7 +41,7 @@ export default class Swarm {
     })
     // Stop
     this.swarm.addEventListener('stop', () => {
-      console.log('⛔️ The MPC server is terminated')
+      console.log('⛔️ The node is terminated')
     })
   }
 
