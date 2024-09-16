@@ -1,0 +1,15 @@
+# ide
+.DS_Store
+
+# node
+node_modules
+
+# build
+dist
+
+# env
+.env
+
+# ci/cd
+.github
+fly.toml
