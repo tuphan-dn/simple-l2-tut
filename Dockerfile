@@ -19,7 +19,6 @@ RUN pnpm prune --prod
 # Runner
 # ===============================
 FROM base AS runner
-WORKDIR /app
 # Get source
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/dist /app/dist
