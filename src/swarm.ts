@@ -54,7 +54,7 @@ export default class Swarm {
       start: false,
       privateKey,
       addresses: {
-        listen: [`/ip4/0.0.0.0/tcp/${PORT}`, `/ip6/::/tcp/${PORT}`],
+        listen: [`/ip4/0.0.0.0/tcp/${PORT}`],
       },
       transports: [tcp()],
       streamMuxers: [yamux()],
