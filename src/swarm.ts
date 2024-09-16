@@ -9,7 +9,6 @@ import {
   type IdentifyPush,
   identifyPush,
 } from '@libp2p/identify'
-import { mdns } from '@libp2p/mdns'
 import { gossipsub, type GossipsubEvents } from '@chainsafe/libp2p-gossipsub'
 import { type KadDHT, kadDHT, passthroughMapper } from '@libp2p/kad-dht'
 import { bootstrap } from '@libp2p/bootstrap'
@@ -61,7 +60,6 @@ export default class Swarm {
       streamMuxers: [yamux()],
       connectionEncrypters: [noise()],
       peerDiscovery: [
-        mdns(),
         bootstrap({
           list: [
             '/ip4/13.238.141.54/tcp/8000/p2p/16Uiu2HAmPJ7rawvyJm9BavwwfSCR9sp4e6PnjmnFTygZFooPBnX1',

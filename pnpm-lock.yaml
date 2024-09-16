@@ -29,9 +29,6 @@ dependencies:
   '@libp2p/kad-dht':
     specifier: ^13.0.1
     version: 13.0.1
-  '@libp2p/mdns':
-    specifier: ^11.0.1
-    version: 11.0.1
   '@libp2p/tcp':
     specifier: ^10.0.1
     version: 10.0.1
@@ -475,19 +472,6 @@ packages:
       weald: 1.0.2
     dev: false
 
-  /@libp2p/mdns@11.0.1:
-    resolution: {integrity: sha512-+20+MuLj/tUEBlR1cdCC0WNOoKVKb/cWHW63EP9tjHs+UQO/EUy2ViFitwGQFONkCKsf8B4NYexo2+hjFQT0Yg==}
-    dependencies:
-      '@libp2p/interface': 2.0.1
-      '@libp2p/interface-internal': 2.0.1
-      '@libp2p/peer-id': 5.0.1
-      '@libp2p/utils': 6.0.1
-      '@multiformats/multiaddr': 12.3.1
-      '@types/multicast-dns': 7.2.4
-      dns-packet: 5.6.1
-      multicast-dns: 7.2.5
-    dev: false
-
   /@libp2p/multistream-select@6.0.1:
     resolution: {integrity: sha512-sdZnbiJE0BDwz7P4+fgwK/Xu7oyL8q8w4USDIEJhGTfwBbhC5TSFLEnP9nv5AGwU2Ecg9zzhhWgmbdkgqZmHdg==}
     dependencies:
@@ -703,13 +687,6 @@ packages:
     resolution: {integrity: sha512-qXOC7XLOEe43ehtWJCMnQXvgcIpv6rPmQ1jXT98Ad8A3TB1Ue50jsCbSSSyuazScEuZ/Q026vHbrOTVkmwA+7Q==}
     dependencies:
       '@types/node': 22.5.5
-
-  /@types/multicast-dns@7.2.4:
-    resolution: {integrity: sha512-ib5K4cIDR4Ro5SR3Sx/LROkMDa0BHz0OPaCBL/OSPDsAXEGZ3/KQeS6poBKYVN7BfjXDL9lWNwzyHVgt/wkyCw==}
-    dependencies:
-      '@types/dns-packet': 5.6.5
-      '@types/node': 22.5.5
-    dev: false
 
   /@types/murmurhash3js-revisited@3.0.3:
     resolution: {integrity: sha512-QvlqvYtGBYIDeO8dFdY4djkRubcrc+yTJtBc7n8VZPlJDUS/00A+PssbvERM8f9bYRmcaSEHPZgZojeQj7kzAA==}
@@ -1080,14 +1057,6 @@ packages:
     engines: {node: '>=12.13'}
     dev: false
 
-  /multicast-dns@7.2.5:
-    resolution: {integrity: sha512-2eznPJP8z2BFLX50tf0LuODrpINqP1RVIm/CObbTcBRITQgmC/TjcREF1NeTBzIcR5XO/ukWo+YHOjBbFwIupg==}
-    hasBin: true
-    dependencies:
-      dns-packet: 5.6.1
-      thunky: 1.1.0
-    dev: false
-
   /multiformats@13.2.3:
     resolution: {integrity: sha512-TXwZIhK1GYOM6zO4H8tRYgXi9wRrRl+MSa3PY5DZaD7YdUMLYLXRbRTJwtCrqeDW8dLhzO9ehlC7A8vi6dMJyA==}
 
@@ -1185,10 +1154,6 @@ packages:
   /supports-color@9.4.0:
     resolution: {integrity: sha512-VL+lNrEoIXww1coLPOmiEmK/0sGigko5COxI09KzHc2VJXJsQ37UaQ+8quuxjDeA7+KnLGTWRyOXSLLR2Wb4jw==}
     engines: {node: '>=12'}
-    dev: false
-
-  /thunky@1.1.0:
-    resolution: {integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==}
     dev: false
 
   /tslib@2.7.0:
