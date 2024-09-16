@@ -55,7 +55,7 @@ export default class Swarm {
       start: false,
       privateKey,
       addresses: {
-        listen: [`/ip4/0.0.0.0/tcp/${PORT}`, `/ip6/::/tcp/${PORT}`],
+        listen: [`/ip4/0.0.0.0/tcp/${PORT}`],
       },
       transports: [tcp()],
       streamMuxers: [yamux()],
@@ -64,7 +64,7 @@ export default class Swarm {
         mdns(),
         bootstrap({
           list: [
-            '/ip6/2a09:8280:1::46:69b6:0/tcp/8000/p2p/16Uiu2HAmPJ7rawvyJm9BavwwfSCR9sp4e6PnjmnFTygZFooPBnX1',
+            '/ip4/137.66.32.152/tcp/8000/p2p/16Uiu2HAmPJ7rawvyJm9BavwwfSCR9sp4e6PnjmnFTygZFooPBnX1',
           ],
         }),
       ],
