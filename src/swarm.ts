@@ -11,15 +11,15 @@ import {
 } from '@libp2p/identify'
 import { mdns } from '@libp2p/mdns'
 import { gossipsub, type GossipsubEvents } from '@chainsafe/libp2p-gossipsub'
-import { kadDHT, passthroughMapper } from '@libp2p/kad-dht'
-import { bootstrap } from '@libp2p/bootstrap'
+import { type KadDHT, kadDHT, passthroughMapper } from '@libp2p/kad-dht'
 
-import { BOOTSTRAP, PORT } from './config'
+import { PORT } from './config'
 
 export type SwarmProps = Libp2p<{
   identify: Identify
   identifyPush: IdentifyPush
   pubsub: PubSub<GossipsubEvents>
+  dht: KadDHT
 }>
 
 export default class Swarm {
@@ -50,7 +50,6 @@ export default class Swarm {
   }
 
   static new = async <E extends PrivateKey>(privateKey: E) => {
-    console.log(BOOTSTRAP)
     const swarm = await createLibp2p({
       start: false,
       privateKey,
@@ -60,14 +59,7 @@ export default class Swarm {
       transports: [tcp()],
       streamMuxers: [yamux()],
       connectionEncrypters: [noise()],
-      peerDiscovery: [
-        mdns(),
-        bootstrap({
-          list: [
-            '/ip6/2a09:8280:1::46:69b6:0/tcp/8000/p2p/16Uiu2HAmPJ7rawvyJm9BavwwfSCR9sp4e6PnjmnFTygZFooPBnX1',
-          ],
-        }),
-      ],
+      peerDiscovery: [mdns()],
       services: {
         identify: identify(),
         identifyPush: identifyPush(),

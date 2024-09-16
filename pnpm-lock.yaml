@@ -17,9 +17,6 @@ dependencies:
   '@libp2p/autonat':
     specifier: ^2.0.1
     version: 2.0.1
-  '@libp2p/bootstrap':
-    specifier: ^11.0.1
-    version: 11.0.1
   '@libp2p/crypto':
     specifier: ^5.0.1
     version: 5.0.1
@@ -366,16 +363,6 @@ packages:
       multiformats: 13.2.3
       protons-runtime: 5.5.0
       uint8arraylist: 2.4.8
-    dev: false
-
-  /@libp2p/bootstrap@11.0.1:
-    resolution: {integrity: sha512-xLI6pHVKe6CV+QrEKxrjr/safP2rpZ0u3GXjW8OAZ9g1QSSVjQ91pb642N3dVfQZb7uMMh7EbFf/GFfnvc3CZg==}
-    dependencies:
-      '@libp2p/interface': 2.0.1
-      '@libp2p/interface-internal': 2.0.1
-      '@libp2p/peer-id': 5.0.1
-      '@multiformats/mafmt': 12.1.6
-      '@multiformats/multiaddr': 12.3.1
     dev: false
 
   /@libp2p/crypto@5.0.1:
