@@ -64,7 +64,7 @@ export default class Swarm {
         mdns(),
         bootstrap({
           list: [
-            '/ip4/137.66.32.152/tcp/8000/p2p/16Uiu2HAmPJ7rawvyJm9BavwwfSCR9sp4e6PnjmnFTygZFooPBnX1',
+            '/ip4/13.238.141.54/tcp/8000/p2p/16Uiu2HAmPJ7rawvyJm9BavwwfSCR9sp4e6PnjmnFTygZFooPBnX1',
           ],
         }),
       ],
