@@ -2,6 +2,7 @@ import { keys, randomBytes } from '@libp2p/crypto'
 
 import { PRIVATE_KEY } from './config'
 import Swarm from './swarm'
+import { buf2bin, get, prove, put, verify } from './state'
 
 async function main() {
   const privkey = keys.privateKeyFromRaw(Buffer.from(PRIVATE_KEY, 'hex'))
@@ -11,13 +12,20 @@ async function main() {
 
   const topic = 'randao'
   swarm.services.pubsub.subscribe(topic)
-  swarm.services.pubsub.addEventListener('message', ({ detail }) => {
+  swarm.services.pubsub.addEventListener('message', async ({ detail }) => {
     console.log(
       'Message:',
       detail.topic,
       Buffer.from(detail.data).toString('hex'),
     )
   })
+
+  const key = buf2bin(randomBytes(32))
+  const value = randomBytes(32)
+  await put(key, value)
+  const proof = await prove(key)
+  const ok = await verify(key, proof)
+  console.log(ok)
 
   setInterval(async () => {
     const ok = swarm.services.pubsub.getSubscribers(topic).length
