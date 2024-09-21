@@ -36,23 +36,23 @@ export default class Bridge {
       {},
       {
         onLogs: async (logs: any) => {
-          for (const {
-            args: { account, amount },
-            transactionHash,
-          } of logs as Array<
-            Log & {
+          const txs: Tx[] = logs.map(
+            ({
+              args: { account, amount },
+              transactionHash,
+            }: Log & {
               args: { account: `0x${string}`; amount: bigint }
-            }
-          >) {
-            const tx = new Tx(
-              hexToBytes(zeroAddress),
-              hexToBytes(account),
-              amount,
-              hexToBytes(transactionHash!!),
-            )
-            console.log(tx.data)
-            await pool.put(tx.txId, tx.data)
-          }
+            }) =>
+              new Tx(
+                hexToBytes(zeroAddress),
+                hexToBytes(account),
+                amount,
+                hexToBytes(transactionHash!!),
+              ),
+          )
+          await pool.batch(
+            txs.map((tx) => ({ type: 'put', key: tx.txId, value: tx.data })),
+          )
         },
       },
     )

@@ -24,12 +24,12 @@ async function main() {
     )
   })
 
-  const key = buf2bin(randomBytes(32))
-  const value = randomBytes(32)
-  await state.put(key, value)
-  const proof = await state.prove(key)
-  const ok = await state.verify(key, proof)
-  console.log(ok)
+  // const key = buf2bin(randomBytes(32))
+  // const value = randomBytes(32)
+  // await state.put(key, value)
+  // const proof = await state.prove(key)
+  // const ok = await state.verify(key, proof)
+  // console.log(ok)
   bridge.watch()
 
   // setInterval(async () => {

@@ -42,7 +42,7 @@ contract Rollup {
     emit Unlock(msg.sender, amount);
   }
 
-  function propose(bytes32 root, bytes32 prev, bytes32[] calldata txs) public {
+  function propose(bytes32 root, bytes32 prev, bytes calldata txs) public {
     chain[root] = Block({prev: prev, timestamp: block.timestamp});
     emit Propose(msg.sender, root, prev);
   }

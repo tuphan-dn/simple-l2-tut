@@ -25,12 +25,6 @@ export default class Tx {
   }
 
   get data() {
-    console.log(
-      this.from.length,
-      this.to.length,
-      this.value.length,
-      this.witness.length,
-    )
     return concatBytes(this.from, this.to, this.value, this.witness)
   }
 }
