@@ -26,7 +26,6 @@
     "@libp2p/crypto": "^5.0.1",
     "@libp2p/identify": "^3.0.1",
     "@libp2p/kad-dht": "^13.0.1",
-    "@libp2p/mdns": "^11.0.1",
     "@libp2p/tcp": "^10.0.1",
     "dotenv": "^16.4.5",
     "ethereum-cryptography": "^3.0.0",

@@ -9,7 +9,6 @@ import {
   type IdentifyPush,
   identifyPush,
 } from '@libp2p/identify'
-import { mdns } from '@libp2p/mdns'
 import { gossipsub, type GossipsubEvents } from '@chainsafe/libp2p-gossipsub'
 import { type KadDHT, kadDHT, passthroughMapper } from '@libp2p/kad-dht'
 
@@ -59,7 +58,7 @@ export default class Swarm {
       transports: [tcp()],
       streamMuxers: [yamux()],
       connectionEncrypters: [noise()],
-      peerDiscovery: [mdns()],
+      peerDiscovery: [],
       services: {
         identify: identify(),
         identifyPush: identifyPush(),
