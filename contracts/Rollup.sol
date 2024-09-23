@@ -6,8 +6,15 @@ struct Block {
   uint256 timestamp;
 }
 
+struct Tx {
+  address from;
+  address to;
+  uint256 amount;
+  bytes32 witness;
+}
+
 contract Rollup {
-  bytes32 public genesis = keccak256(bytes('rollup-genesis-block'));
+  bytes32 public latest = keccak256(bytes('rollup-genesis-block'));
   mapping(bytes32 root => Block block) chain;
   mapping(address account => mapping(bytes32 root => bool unlocked)) unlocks;
 
@@ -19,6 +26,12 @@ contract Rollup {
     );
     _;
     unlocks[msg.sender][header] = true;
+  }
+
+  modifier referable(bytes32 root, bytes32 prev) {
+    require(prev == latest, 'Invalid latest block.');
+    _;
+    latest = root;
   }
 
   event Lock(address indexed account, uint256 amount);
@@ -42,7 +55,11 @@ contract Rollup {
     emit Unlock(msg.sender, amount);
   }
 
-  function propose(bytes32 root, bytes32 prev, bytes calldata txs) public {
+  function propose(
+    bytes32 root,
+    bytes32 prev,
+    Tx[] calldata txs
+  ) public referable(root, prev) {
     chain[root] = Block({prev: prev, timestamp: block.timestamp});
     emit Propose(msg.sender, root, prev);
   }

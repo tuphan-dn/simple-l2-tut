@@ -1,36 +1,11 @@
-import {
-  createPublicClient,
-  getContract,
-  http,
-  type Log,
-  zeroAddress,
-  type PublicClient,
-} from 'viem'
-import { sepolia } from 'viem/chains'
+import { type Log, zeroAddress } from 'viem'
 import { hexToBytes } from 'ethereum-cryptography/utils'
 
-import abi from '../contracts/Rollup.json'
-import { pool } from './pool'
+import { pool } from './sequencer'
 import Tx from './tx'
+import Contract from './contract'
 
-export default class Bridge {
-  public readonly client: PublicClient
-
-  constructor(public readonly address: `0x${string}`) {
-    this.client = createPublicClient({
-      chain: sepolia,
-      transport: http(),
-    })
-  }
-
-  get contract() {
-    return getContract({
-      address: this.address,
-      abi,
-      client: this.client,
-    })
-  }
-
+export default class Bridge extends Contract {
   watch = () => {
     const unwatch = this.contract.watchEvent.Lock(
       {},

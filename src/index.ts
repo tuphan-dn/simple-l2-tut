@@ -1,20 +1,18 @@
-import { keys, randomBytes } from '@libp2p/crypto'
+import { keys } from '@libp2p/crypto'
 
 import { PRIVATE_KEY } from './config'
 import Swarm from './swarm'
-import { state } from './state'
 import Bridge from './bridge'
-import { buf2bin } from './trie'
+import Sequencer from './sequencer'
+import EVM from './evm'
 
 async function main() {
+  // Swarm
   const privkey = keys.privateKeyFromRaw(Buffer.from(PRIVATE_KEY, 'hex'))
   const { swarm } = await Swarm.new(privkey)
   await swarm.services.dht.setMode('server')
   await swarm.start()
-  // Bridge
-  const bridge = new Bridge('0xeC07A06dF0d4b4a8C857D6f12AEBD71f1bd45294')
-
-  const topic = 'randao'
+  const topic = 'consensus'
   swarm.services.pubsub.subscribe(topic)
   swarm.services.pubsub.addEventListener('message', async ({ detail }) => {
     console.log(
@@ -23,14 +21,15 @@ async function main() {
       Buffer.from(detail.data).toString('hex'),
     )
   })
-
-  // const key = buf2bin(randomBytes(32))
-  // const value = randomBytes(32)
-  // await state.put(key, value)
-  // const proof = await state.prove(key)
-  // const ok = await state.verify(key, proof)
-  // console.log(ok)
+  // Bridge
+  const bridge = new Bridge('0xeC07A06dF0d4b4a8C857D6f12AEBD71f1bd45294')
   bridge.watch()
+  // EVM
+  const evm = new EVM('0xeC07A06dF0d4b4a8C857D6f12AEBD71f1bd45294')
+  evm.sync()
+  // Sequencer
+  // const sequencer = new Sequencer()
+  // sequencer.start()
 
   // setInterval(async () => {
   //   const ok = swarm.services.pubsub.getSubscribers(topic).length
