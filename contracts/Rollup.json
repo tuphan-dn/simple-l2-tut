@@ -64,7 +64,7 @@
   },
   {
     "inputs": [],
-    "name": "genesis",
+    "name": "latest",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -95,9 +95,31 @@
         "type": "bytes32"
       },
       {
-        "internalType": "bytes32[]",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "witness",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct Tx[]",
         "name": "txs",
-        "type": "bytes32[]"
+        "type": "tuple[]"
       }
     ],
     "name": "propose",

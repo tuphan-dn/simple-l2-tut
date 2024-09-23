@@ -4,7 +4,6 @@ import { PRIVATE_KEY } from './config'
 import Swarm from './swarm'
 import Bridge from './bridge'
 import Sequencer from './sequencer'
-import EVM from './evm'
 
 async function main() {
   // Swarm
@@ -22,14 +21,11 @@ async function main() {
     )
   })
   // Bridge
-  const bridge = new Bridge('0xeC07A06dF0d4b4a8C857D6f12AEBD71f1bd45294')
+  const bridge = new Bridge('0xDbcdAc8D65eFBE701055076270d9BF9DA6Bf9B30')
   bridge.watch()
-  // EVM
-  const evm = new EVM('0xeC07A06dF0d4b4a8C857D6f12AEBD71f1bd45294')
-  evm.sync()
   // Sequencer
-  // const sequencer = new Sequencer()
-  // sequencer.start()
+  const sequencer = new Sequencer('0xDbcdAc8D65eFBE701055076270d9BF9DA6Bf9B30')
+  sequencer.start()
 
   // setInterval(async () => {
   //   const ok = swarm.services.pubsub.getSubscribers(topic).length
