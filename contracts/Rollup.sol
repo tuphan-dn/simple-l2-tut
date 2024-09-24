@@ -14,7 +14,8 @@ struct Tx {
 }
 
 contract Rollup {
-  bytes32 public latest = keccak256(bytes('rollup-genesis-block'));
+  bytes32 public latest =
+    0xab2344d27f94c1e4753f34becf3bbe88aea4caf33c2380c85b4e4ef6f286e6d1;
   mapping(bytes32 root => Block block) chain;
   mapping(address account => mapping(bytes32 root => bool unlocked)) unlocks;
 

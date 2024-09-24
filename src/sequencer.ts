@@ -1,20 +1,13 @@
 import { Level } from 'level'
-import { decodeFunctionData, type Hex } from 'viem'
+import { bytesToBigInt, decodeFunctionData, type Hex } from 'viem'
+import { bytesToHex, hexToBytes } from 'ethereum-cryptography/utils'
 
 import { PORT } from './config'
 import Contract from './contract'
 import { stateTrie } from './state'
 import Tx, { type TxLog, txTrie } from './tx'
 import { metadata, MyLatestBlock, MyLatestRoot } from './metadata'
-import { buf2bin, hash } from './trie'
-
-// If I'm no the leader, sync the new blocks
-// Else
-// Bundled <= 5 txs withdrawn from the pool
-// Apply to the tx-trie and state-trie
-// Compute root = hash(prev | tx-trie-root | state-trie-root)
-// Propose the block
-// Sync
+import { bigintToBytes, bytesToBinary, hash } from './trie'
 
 const THRESHOLD = 60000
 const sleep = (ms: number) =>
@@ -28,18 +21,18 @@ export const pool = new Level<Uint8Array, Uint8Array>(`data/${PORT}/pool`, {
 export default class Sequencer extends Contract {
   start = async (): Promise<void> => {
     await sleep(Math.ceil(Math.random() * THRESHOLD))
-    const latest = await MyLatestBlock.get()
+    const block = await MyLatestBlock.get()
     const logs = await this.client.getContractEvents({
       abi: this.abi,
       eventName: 'Propose',
-      fromBlock: latest + BigInt(1),
+      fromBlock: block + BigInt(1),
     })
     if (!logs.length) {
       // Check reorg'ed
       if ((await this.contract.read.latest()) !== (await MyLatestRoot.get())) {
         console.info('😱 Reorg: Clear all state and resync from the beginning')
-        await stateTrie.clear()
-        await txTrie.clear()
+        await stateTrie.reset()
+        await txTrie.reset()
         await metadata.clear()
       } else {
         // Updated! Propose a new block
@@ -59,10 +52,10 @@ export default class Sequencer extends Contract {
       const tx = new Tx(
         value.subarray(0, 20),
         value.subarray(20, 40),
-        BigInt(`0x${Buffer.from(value.subarray(40, 72)).toString('hex')}`),
+        bytesToBigInt(value.subarray(40, 72)),
         value.subarray(72, 104),
       )
-      if (await txTrie.get(buf2bin(tx.txId))) continue
+      if (await txTrie.get(bytesToBinary(tx.txId))) continue
       else txs.push(tx)
     }
     if (!txs.length) return console.info('⛏️ Empty pool')
@@ -70,15 +63,15 @@ export default class Sequencer extends Contract {
     await this.execute(txs)
     // Submit the block
     const prev = (await this.contract.read.latest()) as string
-    const root: Hex = `0x${Buffer.from(
+    const root: Hex = `0x${bytesToHex(
       hash({
-        left: Buffer.from(prev.substring(2), 'hex'),
+        left: hexToBytes(prev.substring(2)),
         right: hash({
           left: await txTrie.root(),
           right: await stateTrie.root(),
         }),
       })!!,
-    ).toString('hex')}`
+    )}`
     try {
       const txId = await this.contract.write.propose([
         root,
@@ -122,9 +115,24 @@ export default class Sequencer extends Contract {
   }
 
   execute = async (txs: Tx[]) => {
-    console.log('=================')
+    console.log(txs.map((tx) => tx.decode()))
     for (const tx of txs) {
-      console.log(tx)
+      await txTrie.put(bytesToBinary(tx.txId), tx.data)
+      const from =
+        (await stateTrie.get(bytesToBinary(tx.from))) ||
+        hexToBytes(''.padStart(64, '0'))
+      const to =
+        (await stateTrie.get(bytesToBinary(tx.to))) ||
+        hexToBytes(''.padStart(64, '0'))
+      // No balance validation here so we can makeup a fake transaction later for fraud proof
+      await stateTrie.put(
+        bytesToBinary(tx.from),
+        bigintToBytes(bytesToBigInt(from) - tx.amount),
+      )
+      await stateTrie.put(
+        bytesToBinary(tx.to),
+        bigintToBytes(bytesToBigInt(to) + tx.amount),
+      )
     }
   }
 }

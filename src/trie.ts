@@ -1,9 +1,15 @@
 import { type Level } from 'level'
 import { keccak256 } from 'ethereum-cryptography/keccak'
-import { concatBytes } from 'ethereum-cryptography/utils'
+import { concatBytes, hexToBytes } from 'ethereum-cryptography/utils'
+import { bytesToBigInt } from 'viem'
 
-export const buf2bin = (buffer: Uint8Array) => {
-  return BigInt('0x' + Buffer.from(buffer).toString('hex'))
+export const bigintToBytes = (bn: bigint) => {
+  const hex = bn.toString(16).padStart(64, '0')
+  return hexToBytes(hex)
+}
+
+export const bytesToBinary = (buffer: Uint8Array) => {
+  return bytesToBigInt(buffer)
     .toString(2)
     .padStart(buffer.length * 8, '0')
     .split('')
@@ -27,7 +33,10 @@ export const hash = ({
 }
 
 export default class Trie {
-  constructor(public readonly state: Level<boolean[], Uint8Array>) {}
+  constructor(
+    public readonly state: Level<boolean[], Uint8Array>,
+    public readonly init: Array<{ key: boolean[]; value: Uint8Array }> = [],
+  ) {}
 
   put = async (key: boolean[], value?: Uint8Array): Promise<void> => {
     if (!value) await this.state.del(key)
@@ -83,5 +92,10 @@ export default class Trie {
     const b = proof.shift()
     const p = hash({ left: !bit ? a : b, right: !bit ? b : a })
     return this.verify(key, [p, ...proof])
+  }
+
+  reset = async () => {
+    await this.state.clear()
+    for (const { key, value } of this.init) await this.put(key, value)
   }
 }
