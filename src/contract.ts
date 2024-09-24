@@ -5,6 +5,7 @@ import {
   type WalletClient,
   type PublicClient,
   createWalletClient,
+  type Hex,
 } from 'viem'
 import { holesky } from 'viem/chains'
 import { privateKeyToAccount } from 'viem/accounts'
@@ -17,14 +18,18 @@ export default class Contract {
   public readonly client: PublicClient
   public readonly wallet: WalletClient
 
-  constructor(public readonly address: `0x${string}`) {
+  constructor(public readonly address: Hex) {
     this.client = createPublicClient({
       chain: holesky,
-      transport: http(),
+      transport: http(
+        'https://holesky.infura.io/v3/783c24a3a364474a8dbed638263dc410',
+      ),
     })
     this.wallet = createWalletClient({
       chain: holesky,
-      transport: http(),
+      transport: http(
+        'https://holesky.infura.io/v3/783c24a3a364474a8dbed638263dc410',
+      ),
       account: privateKeyToAccount(`0x${PRIVATE_KEY}`),
     })
     console.info('💳 The coinbase:', this.wallet.account?.address)

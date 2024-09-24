@@ -1,5 +1,6 @@
 import { Level } from 'level'
 import { keccak256 } from 'ethereum-cryptography/keccak'
+import { type Hex } from 'viem'
 
 import { PORT } from './config'
 
@@ -14,7 +15,7 @@ export class MyLatestBlock {
       return BigInt(`0x${buf.toString('hex')}`)
     } catch (er: any) {
       if (er.code !== 'LEVEL_NOT_FOUND') throw er
-      return BigInt(6744077)
+      return BigInt(2397766)
     }
   }
 
@@ -27,7 +28,7 @@ export class MyLatestBlock {
 }
 
 export class MyLatestRoot {
-  static get = async (): Promise<`0x${string}`> => {
+  static get = async (): Promise<Hex> => {
     try {
       const buf = await metadata.get('latest-root')
       return `0x${buf.toString('hex')}`
@@ -39,7 +40,7 @@ export class MyLatestRoot {
     }
   }
 
-  static set = async (root: `0x${string}`) => {
+  static set = async (root: Hex) => {
     return await metadata.put(
       'latest-root',
       Buffer.from(root.substring(2), 'hex'),

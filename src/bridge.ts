@@ -1,4 +1,4 @@
-import { type Log, zeroAddress } from 'viem'
+import { type Hex, type Log, zeroAddress } from 'viem'
 import { hexToBytes } from 'ethereum-cryptography/utils'
 
 import { pool } from './sequencer'
@@ -16,7 +16,7 @@ export default class Bridge extends Contract {
               args: { account, amount },
               transactionHash,
             }: Log & {
-              args: { account: `0x${string}`; amount: bigint }
+              args: { account: Hex; amount: bigint }
             }) =>
               new Tx(
                 hexToBytes(zeroAddress),
