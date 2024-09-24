@@ -37,11 +37,11 @@ export const pool = new Level<Uint8Array, Uint8Array>(`data/${PORT}/pool`, {
 export default class Sequencer extends Contract {
   start = async (): Promise<void> => {
     await sleep(Math.ceil(Math.random() * THRESHOLD))
-    const fromBlock = await MyLatestBlock.get()
+    const latest = await MyLatestBlock.get()
     const logs = await this.client.getContractEvents({
       abi: this.abi,
       eventName: 'Propose',
-      fromBlock,
+      fromBlock: latest + BigInt(1),
     })
     if (!logs.length) {
       // Check reorg'ed
@@ -88,10 +88,12 @@ export default class Sequencer extends Contract {
       })!!,
     ).toString('hex')}`
     const txId = await this.contract.write.propose([root, prev, txs])
+    const { blockNumber } = await this.client.getTransaction({ hash: txId })
     // Update state
+    await MyLatestBlock.set(blockNumber)
     await MyLatestRoot.set(root)
     // Return
-    return console.info('⛏️ Proposed a new block:', txId)
+    return console.info('⛏️ Proposed a new block:', root)
   }
 
   sync = async <
