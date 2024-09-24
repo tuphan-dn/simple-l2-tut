@@ -12,7 +12,7 @@ async function main() {
   const topic = 'randao'
   swarm.services.pubsub.subscribe(topic)
   swarm.services.pubsub.addEventListener('message', ({ detail }) => {
-    console.log(
+    console.info(
       'Message:',
       detail.topic,
       Buffer.from(detail.data).toString('hex'),
