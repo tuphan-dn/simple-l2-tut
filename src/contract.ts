@@ -27,7 +27,7 @@ export default class Contract {
       transport: http(),
       account: privateKeyToAccount(`0x${PRIVATE_KEY}`),
     })
-    console.log('💳 The coinbase:', this.wallet.account?.address)
+    console.info('💳 The coinbase:', this.wallet.account?.address)
   }
 
   get contract() {

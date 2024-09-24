@@ -6,6 +6,14 @@ import { keccak256 } from 'ethereum-cryptography/keccak'
 import { PORT } from './config'
 import Contract from './contract'
 
+// If I'm no the leader, sync the new blocks
+// Else
+// Bundled <= 5 txs withdrawn from the pool
+// Apply to the tx-trie and state-trie
+// Compute root = hash(prev | tx-trie-root | state-trie-root)
+// Propose the block
+// Sync
+
 type Tx = {
   from: `0x${string}`
   to: `0x${string}`
@@ -77,7 +85,7 @@ export default class Sequencer extends Contract {
     }
     const root = `0x${Buffer.from(keccak256(bundled)).toString('hex')}`
     const txId = await this.contract.write.propose([root, prev, txs])
-    return console.log('⛏️ Proposed a new block:', txId)
+    return console.info('⛏️ Proposed a new block:', txId)
   }
 
   sync = async <

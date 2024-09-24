@@ -14,7 +14,7 @@ async function main() {
   const topic = 'consensus'
   swarm.services.pubsub.subscribe(topic)
   swarm.services.pubsub.addEventListener('message', async ({ detail }) => {
-    console.log(
+    console.info(
       'Message:',
       detail.topic,
       Buffer.from(detail.data).toString('hex'),
