@@ -29,7 +29,7 @@ export default class Tx {
   }
 }
 
-export const txs = new Trie(
+export const txTrie = new Trie(
   new Level<boolean[], Uint8Array>(`data/${PORT}/txs-trie`, {
     keyEncoding: 'buffer',
     valueEncoding: 'buffer',

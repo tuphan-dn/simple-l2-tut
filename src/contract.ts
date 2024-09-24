@@ -6,7 +6,7 @@ import {
   type PublicClient,
   createWalletClient,
 } from 'viem'
-import { sepolia } from 'viem/chains'
+import { holesky } from 'viem/chains'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import abi from '../contracts/Rollup.json'
@@ -19,11 +19,11 @@ export default class Contract {
 
   constructor(public readonly address: `0x${string}`) {
     this.client = createPublicClient({
-      chain: sepolia,
+      chain: holesky,
       transport: http(),
     })
     this.wallet = createWalletClient({
-      chain: sepolia,
+      chain: holesky,
       transport: http(),
       account: privateKeyToAccount(`0x${PRIVATE_KEY}`),
     })

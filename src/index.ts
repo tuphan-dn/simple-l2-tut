@@ -21,10 +21,10 @@ async function main() {
     )
   })
   // Bridge
-  const bridge = new Bridge('0xDbcdAc8D65eFBE701055076270d9BF9DA6Bf9B30')
+  const bridge = new Bridge('0x3804271947b2d6CAC090eB41F96cb6105Baba873')
   bridge.watch()
   // Sequencer
-  const sequencer = new Sequencer('0xDbcdAc8D65eFBE701055076270d9BF9DA6Bf9B30')
+  const sequencer = new Sequencer('0x3804271947b2d6CAC090eB41F96cb6105Baba873')
   sequencer.start()
 
   // setInterval(async () => {

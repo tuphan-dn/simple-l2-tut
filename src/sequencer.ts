@@ -5,6 +5,10 @@ import { keccak256 } from 'ethereum-cryptography/keccak'
 
 import { PORT } from './config'
 import Contract from './contract'
+import { stateTrie } from './state'
+import { txTrie } from './tx'
+import { metadata, MyLatestBlock, MyLatestRoot } from './metadata'
+import { hash } from './trie'
 
 // If I'm no the leader, sync the new blocks
 // Else
@@ -29,48 +33,37 @@ export const pool = new Level<Uint8Array, Uint8Array>(`data/${PORT}/pool`, {
   keyEncoding: 'buffer',
   valueEncoding: 'buffer',
 })
-export const metadata = new Level<string, Buffer>(`data/${PORT}/metadata`, {
-  valueEncoding: 'buffer',
-})
 
 export default class Sequencer extends Contract {
-  getMyLatestBlock = async () => {
-    try {
-      const buf = await metadata.get('latest-block')
-      return BigInt(`0x${buf.toString('hex')}`)
-    } catch (er: any) {
-      if (er.code !== 'LEVEL_NOT_FOUND') throw er
-      return BigInt(6744077)
-    }
-  }
-
-  setMyLatestBlock = async (latest: bigint) => {
-    return await metadata.put(
-      'latest-block',
-      Buffer.from(latest.toString(16), 'hex'),
-    )
-  }
-
   start = async (): Promise<void> => {
     await sleep(Math.ceil(Math.random() * THRESHOLD))
-    const fromBlock = await this.getMyLatestBlock()
+    const fromBlock = await MyLatestBlock.get()
     const logs = await this.client.getContractEvents({
       abi: this.abi,
       eventName: 'Propose',
       fromBlock,
     })
-    if (!logs.length) await this.propose() // Updated! Propose a new block
-    else {
-      const latest = await this.sync(logs) // Sync new blocks
-      await this.setMyLatestBlock(latest)
+    if (!logs.length) {
+      // Check reorg'ed
+      if ((await this.contract.read.latest()) !== (await MyLatestRoot.get())) {
+        console.info('😱 Reorg: Clear all state and resync from the beginning')
+        await stateTrie.clear()
+        await txTrie.clear()
+        await metadata.clear()
+      } else {
+        // Updated! Propose a new block
+        await this.propose()
+      }
+    } else {
+      // Sync new blocks
+      await this.sync(logs)
     }
-    this.start()
+    return this.start()
   }
 
   propose = async () => {
     const prev = (await this.contract.read.latest()) as string
     const txs: Tx[] = []
-    let bundled = Uint8Array.from(Buffer.from(prev.substring(2), 'hex'))
     for await (const [key, value] of pool.iterator({ limit: 5 })) {
       await pool.del(key)
       txs.push({
@@ -81,10 +74,23 @@ export default class Sequencer extends Contract {
         ),
         witness: `0x${Buffer.from(value.subarray(72, 104)).toString('hex')}`,
       })
-      bundled = concatBytes(bundled, value)
     }
-    const root = `0x${Buffer.from(keccak256(bundled)).toString('hex')}`
+    // Apply transactions
+    await this.execute(txs)
+    // Submit the block
+    const root: `0x${string}` = `0x${Buffer.from(
+      hash({
+        left: Buffer.from(prev.substring(2), 'hex'),
+        right: hash({
+          left: await txTrie.root(),
+          right: await stateTrie.root(),
+        }),
+      })!!,
+    ).toString('hex')}`
     const txId = await this.contract.write.propose([root, prev, txs])
+    // Update state
+    await MyLatestRoot.set(root)
+    // Return
     return console.info('⛏️ Proposed a new block:', txId)
   }
 
@@ -92,15 +98,26 @@ export default class Sequencer extends Contract {
     T extends { transactionHash: `0x${string}`; blockNumber: bigint },
   >(
     logs: T[],
-  ): Promise<bigint> => {
+  ) => {
     for (const log of logs) {
-      const tx = await this.client.getTransaction({
+      const { input } = await this.client.getTransaction({
         hash: log.transactionHash,
       })
-      const { args } = decodeFunctionData({ abi: this.abi, data: tx.input })
+      const {
+        args: [root, prev, txs],
+      }: { args: [`0x${string}`, `0x${string}`, Tx[]] } = decodeFunctionData({
+        abi: this.abi,
+        data: input,
+      }) as any
       // Apply transactions
-      console.log(args)
+      await this.execute(txs)
+      // Update state
+      await MyLatestBlock.set(log.blockNumber)
+      await MyLatestRoot.set(root)
+      // Return
+      return console.info('⬇️ Synced block:', root)
     }
-    return logs[logs.length - 1].blockNumber + BigInt(1)
   }
+
+  execute = async (txs: Tx[]) => {}
 }

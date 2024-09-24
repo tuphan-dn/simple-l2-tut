@@ -51,6 +51,10 @@ export default class Trie {
     }
   }
 
+  clear = async () => {
+    await this.state.clear()
+  }
+
   root = async () => {
     return await this.get([])
   }
