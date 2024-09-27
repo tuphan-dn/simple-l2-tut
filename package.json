@@ -5,9 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "DEBUG='libp2p:*' tsx watch src/index.ts",
-    "alice": "dotenvx run --env-file=.env.alice -- tsx watch src/index.ts",
-    "bob": "dotenvx run --env-file=.env.bob -- tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts"
   },
   "keywords": [],
   "author": "",
