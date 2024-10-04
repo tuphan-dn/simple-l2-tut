@@ -6,10 +6,11 @@ import {
   hexToBytes,
 } from 'ethereum-cryptography/utils'
 import { type Hex } from 'viem'
-import { Level } from 'level'
 
-import { PORT } from './config'
-import Trie, { bigintToBytes } from './trie'
+export const bigintToBytes = (bn: bigint) => {
+  const hex = bn.toString(16).padStart(64, '0')
+  return hexToBytes(hex)
+}
 
 export type TxLog = {
   from: Hex
@@ -56,10 +57,3 @@ export default class Tx {
     }
   }
 }
-
-export const txTrie = new Trie(
-  new Level<boolean[], Uint8Array>(`data/${PORT}/txs-trie`, {
-    keyEncoding: 'buffer',
-    valueEncoding: 'buffer',
-  }),
-)

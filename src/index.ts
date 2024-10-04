@@ -3,9 +3,7 @@ import { bytesToHex, hexToBytes } from 'ethereum-cryptography/utils'
 
 import { PRIVATE_KEY } from './config'
 import Swarm from './swarm'
-import { stateTrie } from './state'
 import Bridge from './bridge'
-import Sequencer from './sequencer'
 
 async function main() {
   // Swarm
@@ -18,18 +16,8 @@ async function main() {
   swarm.services.pubsub.addEventListener('message', async ({ detail }) => {
     console.info('Message:', detail.topic, bytesToHex(detail.data))
   })
-  // Init the state trie
-  if (!(await stateTrie.root())) await stateTrie.reset()
   // Bridge
   const bridge = new Bridge('0x10C3Cd012657a3DC886c203B9d7363A33BA73AAA')
   bridge.watch()
-  // Sequencer
-  const sequencer = new Sequencer('0x10C3Cd012657a3DC886c203B9d7363A33BA73AAA')
-  sequencer.start()
-
-  // setInterval(async () => {
-  //   const ok = swarm.services.pubsub.getSubscribers(topic).length
-  //   if (ok) swarm.services.pubsub.publish(topic, randomBytes(32))
-  // }, Math.ceil(10000 * Math.random()))
 }
 main()

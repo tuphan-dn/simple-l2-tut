@@ -1,9 +1,14 @@
+import { Level } from 'level'
 import { type Hex, type Log, zeroAddress } from 'viem'
 import { hexToBytes } from 'ethereum-cryptography/utils'
 
-import { pool } from './sequencer'
 import Tx from './tx'
 import Contract from './contract'
+
+export const pool = new Level<Uint8Array, Uint8Array>('data/pool', {
+  keyEncoding: 'buffer',
+  valueEncoding: 'buffer',
+})
 
 export default class Bridge extends Contract {
   watch = () => {
@@ -32,9 +37,5 @@ export default class Bridge extends Contract {
       },
     )
     return unwatch
-  }
-
-  genesis = async () => {
-    return await this.contract.read.genesis()
   }
 }
