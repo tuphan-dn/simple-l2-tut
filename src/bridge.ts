@@ -1,9 +1,15 @@
 import { type Hex, type Log, zeroAddress } from 'viem'
 import { hexToBytes } from 'ethereum-cryptography/utils'
 
-import { pool } from './sequencer'
 import Tx from './tx'
 import Contract from './contract'
+import { Level } from 'level'
+import { PORT } from './config'
+
+export const pool = new Level<Uint8Array, Uint8Array>(`data/${PORT}/pool`, {
+  keyEncoding: 'buffer',
+  valueEncoding: 'buffer',
+})
 
 export default class Bridge extends Contract {
   watch = () => {

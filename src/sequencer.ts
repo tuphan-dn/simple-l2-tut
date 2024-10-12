@@ -1,22 +1,16 @@
-import { Level } from 'level'
 import { bytesToBigInt, decodeFunctionData, type Hex } from 'viem'
 import { bytesToHex, hexToBytes } from 'ethereum-cryptography/utils'
 
-import { PORT } from './config'
 import Contract from './contract'
 import { stateTrie } from './state'
 import Tx, { type TxLog, txTrie } from './tx'
 import { metadata, MyLatestBlock, MyLatestRoot } from './metadata'
 import { bigintToBytes, bytesToBinary, hash } from './trie'
+import { pool } from './bridge'
 
 const THRESHOLD = 60000
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(() => resolve(), ms))
-
-export const pool = new Level<Uint8Array, Uint8Array>(`data/${PORT}/pool`, {
-  keyEncoding: 'buffer',
-  valueEncoding: 'buffer',
-})
 
 export default class Sequencer extends Contract {
   start = async (): Promise<void> => {
