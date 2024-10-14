@@ -26,10 +26,5 @@ async function main() {
   // Sequencer
   const sequencer = new Sequencer('0x10C3Cd012657a3DC886c203B9d7363A33BA73AAA')
   sequencer.start()
-
-  // setInterval(async () => {
-  //   const ok = swarm.services.pubsub.getSubscribers(topic).length
-  //   if (ok) swarm.services.pubsub.publish(topic, randomBytes(32))
-  // }, Math.ceil(10000 * Math.random()))
 }
 main()
