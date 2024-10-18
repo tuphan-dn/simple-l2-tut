@@ -21,15 +21,10 @@ async function main() {
   // Init the state trie
   if (!(await stateTrie.root())) await stateTrie.reset()
   // Bridge
-  const bridge = new Bridge('0x38374cF29C4fDAB00AAE55472918064562107037')
+  const bridge = new Bridge('0x893d1B751cD4F226A4645275c085fda6Ecb9972B')
   bridge.watch()
   // Sequencer
-  const sequencer = new Sequencer('0x38374cF29C4fDAB00AAE55472918064562107037')
+  const sequencer = new Sequencer('0x893d1B751cD4F226A4645275c085fda6Ecb9972B')
   sequencer.start()
-
-  // setInterval(async () => {
-  //   const ok = swarm.services.pubsub.getSubscribers(topic).length
-  //   if (ok) swarm.services.pubsub.publish(topic, randomBytes(32))
-  // }, Math.ceil(10000 * Math.random()))
 }
 main()

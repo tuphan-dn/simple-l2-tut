@@ -7,6 +7,7 @@ import Tx, { type TxLog, txTrie } from './tx'
 import { metadata, MyLatestBlock, MyLatestRoot } from './metadata'
 import { bigintToBytes, bytesToBinary, hash } from './trie'
 import { pool } from './bridge'
+import { PORT } from './config'
 
 const THRESHOLD = 60000
 const sleep = (ms: number) =>
@@ -55,7 +56,7 @@ export default class Sequencer extends Contract {
     }
     if (!txs.length) return console.info('⛏️ Empty pool')
     // Apply transactions
-    await this.execute(txs)
+    await this.execute(txs, PORT === 8001)
     // Submit the block
     const prev = (await this.contract.read.latest()) as string
     const root: Hex = `0x${bytesToHex(
@@ -101,7 +102,10 @@ export default class Sequencer extends Contract {
         data: input,
       }) as any
       // Apply transactions
-      await this.execute(txs.map((tx) => Tx.encode(tx)))
+      const local = await this.execute(txs.map((tx) => Tx.encode(tx)))
+      if (local !== root) {
+        console.log('Fraud detected')
+      }
       // Update state
       await MyLatestBlock.set(log.blockNumber)
       await MyLatestRoot.set(root)
@@ -109,8 +113,9 @@ export default class Sequencer extends Contract {
     }
   }
 
-  execute = async (txs: Tx[]) => {
+  execute = async (txs: Tx[], fraud = false) => {
     console.log(txs.map((tx) => tx.decode()))
+    const prev = (await this.contract.read.latest()) as string
     for (const tx of txs) {
       await txTrie.put(bytesToBinary(tx.txId), tx.data)
       const from =
@@ -119,15 +124,24 @@ export default class Sequencer extends Contract {
       const to =
         (await stateTrie.get(bytesToBinary(tx.to))) ||
         hexToBytes(''.padStart(64, '0'))
-      // No balance validation here so we can makeup a fake transaction later for fraud proof
       await stateTrie.put(
         bytesToBinary(tx.from),
-        bigintToBytes(bytesToBigInt(from) - tx.amount),
+        fraud ? from : bigintToBytes(bytesToBigInt(from) - tx.amount), // If the sequencer is malicious, he doesn't minus the amount
       )
       await stateTrie.put(
         bytesToBinary(tx.to),
         bigintToBytes(bytesToBigInt(to) + tx.amount),
       )
     }
+    const root: Hex = `0x${bytesToHex(
+      hash({
+        left: hexToBytes(prev.substring(2)),
+        right: hash({
+          left: await txTrie.root(),
+          right: await stateTrie.root(),
+        }),
+      })!!,
+    )}`
+    return root
   }
 }

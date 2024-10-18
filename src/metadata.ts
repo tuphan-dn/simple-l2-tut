@@ -16,7 +16,7 @@ export class MyLatestBlock {
       return bytesToBigInt(buf)
     } catch (er: any) {
       if (er.code !== 'LEVEL_NOT_FOUND') throw er
-      return BigInt(2549388)
+      return BigInt(2556996)
     }
   }
 
