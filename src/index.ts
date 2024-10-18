@@ -21,10 +21,10 @@ async function main() {
   // Init the state trie
   if (!(await stateTrie.root())) await stateTrie.reset()
   // Bridge
-  const bridge = new Bridge('0x10C3Cd012657a3DC886c203B9d7363A33BA73AAA')
+  const bridge = new Bridge('0x38374cF29C4fDAB00AAE55472918064562107037')
   bridge.watch()
   // Sequencer
-  const sequencer = new Sequencer('0x10C3Cd012657a3DC886c203B9d7363A33BA73AAA')
+  const sequencer = new Sequencer('0x38374cF29C4fDAB00AAE55472918064562107037')
   sequencer.start()
 
   // setInterval(async () => {

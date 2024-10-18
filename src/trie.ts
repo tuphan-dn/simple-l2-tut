@@ -85,13 +85,15 @@ export default class Trie {
     proof: Array<Uint8Array | undefined>,
   ): Promise<boolean> => {
     if (key.length + 1 !== proof.length || !proof.length) return false
-    if (proof.length === 1)
-      return proof[0]?.toString() === (await this.root())?.toString()
-    const bit = key.shift()
-    const a = proof.shift()
-    const b = proof.shift()
-    const p = hash({ left: !bit ? a : b, right: !bit ? b : a })
-    return this.verify(key, [p, ...proof])
+    const [node, ...relatives] = proof
+    let cache = node
+    for (let i = 0; i < key.length; i++) {
+      const bit = key[i]
+      const left = !bit ? cache : relatives[i]
+      const right = !bit ? relatives[i] : cache
+      cache = hash({ left, right })
+    }
+    return cache?.toString() === (await this.root())?.toString()
   }
 
   reset = async () => {

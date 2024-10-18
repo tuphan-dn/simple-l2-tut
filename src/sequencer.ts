@@ -18,6 +18,7 @@ export default class Sequencer extends Contract {
     const block = await MyLatestBlock.get()
     const logs = await this.client.getContractEvents({
       abi: this.abi,
+      address: this.address,
       eventName: 'Propose',
       fromBlock: block + BigInt(1),
     })

@@ -63,6 +63,91 @@
     "type": "event"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "root",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool[]",
+            "name": "key",
+            "type": "bool[]"
+          },
+          {
+            "internalType": "bytes",
+            "name": "value",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Node",
+        "name": "prevState",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "prevStateProof",
+        "type": "bytes[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool[]",
+            "name": "key",
+            "type": "bool[]"
+          },
+          {
+            "internalType": "bytes",
+            "name": "value",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Node",
+        "name": "transaction",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "txProof",
+        "type": "bytes[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool[]",
+            "name": "key",
+            "type": "bool[]"
+          },
+          {
+            "internalType": "bytes",
+            "name": "value",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Node",
+        "name": "nextState",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "nextStateProof",
+        "type": "bytes[]"
+      }
+    ],
+    "name": "challenge",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "latest",
     "outputs": [
